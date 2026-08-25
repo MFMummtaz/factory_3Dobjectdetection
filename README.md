@@ -35,7 +35,7 @@ In industrial manufacturing, monitoring raw materials and equipment positioning 
 .
 ├── config.yaml         # Centralized YAML configuration for hardware, calibration, and detection settings
 ├── main.py             # Application entry point (loaders, spatial registration, segmentation, viewer)
-├── requirements.txt    # Application entry point (loaders, spatial registration, segmentation, viewer)
+├── requirements.txt    # Python library requirements
 └── README.md           # Project documentation
 ```
 
@@ -140,11 +140,12 @@ The pipeline processes continuous frame sequences through four modular phases:
 
 ## 🚀 Usage Instructions
 
-1. **Configure Parameters:** Open `config.yaml` and set paths for your raw `.db3` files along with the desired mode (`SINGLE_1`, `SINGLE_2`, or `COMBINE`).
-2. **Execute Processing Script:**
+1. Activate the python environment
+2. **Configure Parameters:** Open `config.yaml` and set paths for your raw `.db3` files along with the desired mode (`SINGLE_1`, `SINGLE_2`, or `COMBINE`).
+3. **Execute Processing Script:**
    ```bash
    python main.py
    ```
-3. **Inspect Results:**
+4. **Inspect Results:**
    * Press `Space` to pause/resume frame streaming.
    * Press `C` to switch to **Mode 3** or **Mode 4** to inspect bounding box fits and live metric logging in the console output.
