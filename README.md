@@ -1,3 +1,7 @@
+<p align="center">
+  <video src="./docs/demo.webm" width="85%" controls autoplay loop muted></video>
+</p>
+
 # Factory LiDAR Analytics
 
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
@@ -5,8 +9,6 @@
 ![Engine](https://img.shields.io/badge/viewer-Open3D-green)
 
 A modular 3D point cloud processing pipeline built for dual-3D LiDAR industrial monitoring systems. This repository handles multi-sensor temporal synchronization, spatial coordinate alignment, hierarchical object segmentation (table assemblies and steel plates), and volumetric bounding box extraction to deliver accurate real-time vertical height measurements.
-
----
 
 ## 📋 Table of Contents
 - [Overview](#overview)
