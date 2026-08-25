@@ -1,0 +1,43 @@
+# =========================================================
+# FACTORY LIDAR ANALYTICS CONFIGURATION
+# =========================================================
+
+execution:
+  mode: "COMBINE"  # Options: "SINGLE_1", "SINGLE_2", "COMBINE"
+  db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_10_mlx120/LiDAR_192_168_1_10_mlx120.db3"
+  db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_13_m513211f52400417/LiDAR_192_168_1_13_m513211f52400417.db3"
+  max_time_diff_ns: 50000000  # 50 ms
+
+calibration:
+  # 4x4 Rigid Transformation Matrix for Sensor 2 Alignment
+  transform_matrix:
+    - [ 0.9714,   0.0543,  -0.2312,   1.4150]
+    - [ 0.0658,  -0.9969,   0.0422,  -0.1938]
+    - [-0.2282,  -0.0562,  -0.9720,  10.4319]
+    - [ 0.0,      0.0,      0.0,      1.0   ]
+
+detection:
+  voxel_size: 0.1
+  ground_ransac:
+    distance_threshold: 0.15
+    ransac_n: 3
+    num_iterations: 100
+  pass1_dbscan:
+    eps: 0.4
+    min_points: 10
+    min_cluster_points: 100
+  table_dimensions:
+    min_bounds: [0.8, 2.0, 9.0]
+    max_bounds: [2.5, 3.5, 11.5]
+  pass2_ransac:
+    distance_threshold: 0.03
+    ransac_n: 3
+    num_iterations: 200
+    min_points_remainder: 50
+
+visualization:
+  playback_speed: 0.03
+  window_width: 1280
+  window_height: 720
+  point_size: 2.0
+  background_color: [0.1, 0.1, 0.1]
