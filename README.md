@@ -141,7 +141,7 @@ The pipeline processes continuous frame sequences through four modular phases:
 ## 🚀 Usage Instructions
 
 1. Activate the python environment
-2. **Configure Parameters:** Open `config.yaml` and set paths for your raw `.db3` files along with the desired mode (`SINGLE_1`, `SINGLE_2`, or `COMBINE`).
+2. **Configure Parameters:** Open `config.yaml` and set paths for your raw `.db3` files along with the desired mode (`SINGLE_1`, `SINGLE_2`, or `COMBINE`) also choose the correct calibration parameters according to the choosen .db3 files.
 3. **Execute Processing Script:**
    ```bash
    python main.py
