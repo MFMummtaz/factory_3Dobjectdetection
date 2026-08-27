@@ -69,106 +69,86 @@ def detect_factory_tables(xyz_points, cfg_det):
                     dims = np.sort(obb.extent) 
                     
                     t_dim = cfg_det["table_dimensions"]
-
-
+                    
+                    
                     if (t_dim["height"]["min"] < dims[0] < t_dim["height"]["max"]) and \
                         (t_dim["width"]["min"] < dims[1] < t_dim["width"]["max"]) and \
                         (t_dim["length"]["min"] < dims[2] < t_dim["length"]["max"]):
                         
-                        # Calculate the direction of the shortest axis
+                        # 1. OVERALL BOUNDING BOX (RED)
+                        obb.color = np.array([1.0, 0.0, 0.0])
+                        obbs.append(obb)
+
                         shortest_axis_idx = np.argmin(obb.extent)
                         shortest_axis_dir = obb.R[:, shortest_axis_idx]
-                        
-                        # NEW: Ensure the shortest axis is roughly vertical (Z-component is dominant).
-                        # A threshold of 0.85 allows for slight floor slanting while excluding pillars.
-                        if abs(shortest_axis_dir[2]) > 0.1:
-                            
-                            # 1. OVERALL BOUNDING BOX (RED)
-                            obb.color = np.array([1.0, 0.0, 0.0])
-                            obbs.append(obb)
+                        if shortest_axis_dir[2] < 0: 
+                            shortest_axis_dir = -shortest_axis_dir
 
-                            if shortest_axis_dir[2] < 0: 
-                                shortest_axis_dir = -shortest_axis_dir
-                    
-                    
-                    # if (t_dim["height"]["min"] < dims[0] < t_dim["height"]["max"]) and \
-                    #     (t_dim["width"]["min"] < dims[1] < t_dim["width"]["max"]) and \
-                    #     (t_dim["length"]["min"] < dims[2] < t_dim["length"]["max"]):
-                        
-                    #     # 1. OVERALL BOUNDING BOX (RED)
-                    #     obb.color = np.array([1.0, 0.0, 0.0])
-                    #     obbs.append(obb)
+                        # -------------------------------------------------
+                        # PASS 2: Multi-Pass RANSAC
+                        # -------------------------------------------------
+                        p2_cfg = cfg_det["pass2_ransac"]
+                        plane_model_1, inliers_1 = sub_cloud.segment_plane(
+                            distance_threshold=p2_cfg["distance_threshold"],
+                            ransac_n=p2_cfg["ransac_n"],
+                            num_iterations=p2_cfg["num_iterations"]
+                        )
+                        plane_cloud_1 = sub_cloud.select_by_index(inliers_1)
+                        remainder_cloud = sub_cloud.select_by_index(inliers_1, invert=True)
 
-                    #     shortest_axis_idx = np.argmin(obb.extent)
-                    #     shortest_axis_dir = obb.R[:, shortest_axis_idx]
-                    #     if shortest_axis_dir[2] < 0: 
-                    #         shortest_axis_dir = -shortest_axis_dir
-
-                            # -------------------------------------------------
-                            # PASS 2: Multi-Pass RANSAC
-                            # -------------------------------------------------
-                            p2_cfg = cfg_det["pass2_ransac"]
-                            plane_model_1, inliers_1 = sub_cloud.segment_plane(
+                        if len(remainder_cloud.points) > p2_cfg["min_points_remainder"]:
+                            plane_model_2, inliers_2 = remainder_cloud.segment_plane(
                                 distance_threshold=p2_cfg["distance_threshold"],
                                 ransac_n=p2_cfg["ransac_n"],
                                 num_iterations=p2_cfg["num_iterations"]
                             )
-                            plane_cloud_1 = sub_cloud.select_by_index(inliers_1)
-                            remainder_cloud = sub_cloud.select_by_index(inliers_1, invert=True)
+                            plane_cloud_2 = remainder_cloud.select_by_index(inliers_2)
+                            
+                            pts1 = np.asarray(plane_cloud_1.points)
+                            pts2 = np.asarray(plane_cloud_2.points)
+                            
+                            h1 = np.mean(np.dot(pts1 - obb.center, shortest_axis_dir))
+                            h2 = np.mean(np.dot(pts2 - obb.center, shortest_axis_dir))
+                            
+                            if h1 < h2:
+                                table_pts, plate_pts = pts1, pts2
+                                h_table_mean, h_plate_mean = h1, h2
+                            else:
+                                table_pts, plate_pts = pts2, pts1
+                                h_table_mean, h_plate_mean = h2, h1
+                                
+                            red_bottom_h = -obb.extent[shortest_axis_idx] / 2.0
 
-                            if len(remainder_cloud.points) > p2_cfg["min_points_remainder"]:
-                                plane_model_2, inliers_2 = remainder_cloud.segment_plane(
-                                    distance_threshold=p2_cfg["distance_threshold"],
-                                    ransac_n=p2_cfg["ransac_n"],
-                                    num_iterations=p2_cfg["num_iterations"]
-                                )
-                                plane_cloud_2 = remainder_cloud.select_by_index(inliers_2)
-                                
-                                pts1 = np.asarray(plane_cloud_1.points)
-                                pts2 = np.asarray(plane_cloud_2.points)
-                                
-                                h1 = np.mean(np.dot(pts1 - obb.center, shortest_axis_dir))
-                                h2 = np.mean(np.dot(pts2 - obb.center, shortest_axis_dir))
-                                
-                                if h1 < h2:
-                                    table_pts, plate_pts = pts1, pts2
-                                    h_table_mean, h_plate_mean = h1, h2
-                                else:
-                                    table_pts, plate_pts = pts2, pts1
-                                    h_table_mean, h_plate_mean = h2, h1
-                                    
-                                red_bottom_h = -obb.extent[shortest_axis_idx] / 2.0
-
-                                # 1. GREEN BOX: Table Surface & Base
-                                drop_green_dist = h_table_mean - red_bottom_h
-                                table_base_pts = table_pts - (drop_green_dist * shortest_axis_dir)
-                                green_vol_pts = np.vstack((table_pts, table_base_pts))
-                                
-                                t_cloud = o3d.geometry.PointCloud()
-                                t_cloud.points = o3d.utility.Vector3dVector(green_vol_pts)
-                                t_obb = t_cloud.get_oriented_bounding_box()
-                                t_obb.color = np.array([0.0, 1.0, 0.0])
-                                obbs.append(t_obb)
-                                
-                                # 2. CYAN BOX: Steel Plate
-                                table_max_h = np.max(np.dot(table_pts - obb.center, shortest_axis_dir))
-                                drop_cyan_dist = h_plate_mean - table_max_h
-                                plate_base_pts = plate_pts - (drop_cyan_dist * shortest_axis_dir)
-                                cyan_vol_pts = np.vstack((plate_pts, plate_base_pts))
-                                
-                                p_cloud = o3d.geometry.PointCloud()
-                                p_cloud.points = o3d.utility.Vector3dVector(cyan_vol_pts)
-                                p_obb = p_cloud.get_oriented_bounding_box()
-                                p_obb.color = np.array([0.0, 0.8, 1.0])
-                                obbs.append(p_obb)
-                                
-                                # DISTANCE MEASUREMENT DISPLAY
-                                distance_m = h_plate_mean - table_max_h
-                                if distance_m > 0:
-                                    print("\n" + "="*50)
-                                    print(f" [MEASUREMENT DATA]")
-                                    print(f"  ► Distance (Highest Table Point → Plate) : {distance_m:.3f} m ({distance_m * 100.0:.1f} cm)")
-                                    print("="*50 + "\n")
+                            # 1. GREEN BOX: Table Surface & Base
+                            drop_green_dist = h_table_mean - red_bottom_h
+                            table_base_pts = table_pts - (drop_green_dist * shortest_axis_dir)
+                            green_vol_pts = np.vstack((table_pts, table_base_pts))
+                            
+                            t_cloud = o3d.geometry.PointCloud()
+                            t_cloud.points = o3d.utility.Vector3dVector(green_vol_pts)
+                            t_obb = t_cloud.get_oriented_bounding_box()
+                            t_obb.color = np.array([0.0, 1.0, 0.0])
+                            obbs.append(t_obb)
+                            
+                            # 2. CYAN BOX: Steel Plate
+                            table_max_h = np.max(np.dot(table_pts - obb.center, shortest_axis_dir))
+                            drop_cyan_dist = h_plate_mean - table_max_h
+                            plate_base_pts = plate_pts - (drop_cyan_dist * shortest_axis_dir)
+                            cyan_vol_pts = np.vstack((plate_pts, plate_base_pts))
+                            
+                            p_cloud = o3d.geometry.PointCloud()
+                            p_cloud.points = o3d.utility.Vector3dVector(cyan_vol_pts)
+                            p_obb = p_cloud.get_oriented_bounding_box()
+                            p_obb.color = np.array([0.0, 0.8, 1.0])
+                            obbs.append(p_obb)
+                            
+                            # DISTANCE MEASUREMENT DISPLAY
+                            distance_m = h_plate_mean - table_max_h
+                            if distance_m > 0:
+                                print("\n" + "="*50)
+                                print(f" [MEASUREMENT DATA]")
+                                print(f"  ► Distance (Highest Table Point → Plate) : {distance_m:.3f} m ({distance_m * 100.0:.1f} cm)")
+                                print("="*50 + "\n")
 
     else:
         outlier_cloud.paint_uniform_color([0, 0, 0])
