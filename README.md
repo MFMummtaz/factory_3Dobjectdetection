@@ -121,20 +121,13 @@ The pipeline processes continuous frame sequences through four modular phases:
 
 ## 🎮 Interactive Viewer Controls
 
-### Keyboard Bindings
+Choose Mode inside of the GUI (Visualization Mode)
 
-| Key | Action | Description |
-| :---: | :--- | :--- |
-| `Space` | Play / Pause | Toggle continuous automated sequence playback |
-| `Right Arrow` | Next Frame | Step forward by 1 frame (when paused) |
-| `Left Arrow` | Previous Frame | Step backward by 1 frame (when paused) |
-| `C` | Cycle Color Modes | Switch dynamically through visual colormaps (Modes 0–4) |
+### Render Display Modes
 
-### Render Display Modes (`C` Key)
-
-* **Mode 0 — Reflectivity Intensity Map:** Greyscale gradient representing returned LiDAR beam signal intensity.
-* **Mode 1 — Z-Height Map:** Jet colormap encoding absolute vertical height along the Z-axis.
-* **Mode 2 — Radial Distance Map:** Jet colormap encoding Euclidean distance from the sensor origin.
+* **Mode 0 — Intensity Map:** Greyscale gradient representing returned LiDAR beam signal intensity.
+* **Mode 1 — Height Map:** Jet colormap encoding absolute vertical height along the Z-axis.
+* **Mode 2 — Distance Map:** Jet colormap encoding Euclidean distance from the sensor origin.
 * **Mode 3 — Full Pipeline Output:** Displays full point cloud with active bounding boxes (Red: Candidate, Green: Table Base, Cyan: Steel Plate).
 * **Mode 4 — Target Isolation Mode:** Crops point cloud to isolate target objects and measurements exclusively.
 
