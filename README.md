@@ -1,4 +1,4 @@
-![Demo](https://private-user-images.githubusercontent.com/87586726/640726664-9717cf6b-c490-404e-8526-35354e9df3cd.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODc2NDEwMTQsIm5iZiI6MTc4NzY0MDcxNCwicGF0aCI6Ii84NzU4NjcyNi82NDA3MjY2NjQtOTcxN2NmNmItYzQ5MC00MDRlLTg1MjYtMzUzNTRlOWRmM2NkLmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNjA4MjUlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjYwODI1VDA2NTE1NFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTZhOGVkNTA3ODIwMTI4MDc1YzQyNmIzYTQ4NzA5NTkyZTJhZTg5OGJmMDIyN2M2YTM2YmY2YWFkMjJkZTI0MGEmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JnJlc3BvbnNlLWNvbnRlbnQtdHlwZT1pbWFnZSUyRmdpZiJ9.UeOOJ8uzskikQBqTy4ebv89dlUcWkwS2bezp1dCA3c4)
+![Demo](https://private-user-images.githubusercontent.com/87586726/642581405-3592736b-3add-4727-9783-62c3e1b60346.webm?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODc5MDA3NTUsIm5iZiI6MTc4NzkwMDQ1NSwicGF0aCI6Ii84NzU4NjcyNi82NDI1ODE0MDUtMzU5MjczNmItM2FkZC00NzI3LTk3ODMtNjJjM2UxYjYwMzQ2LndlYm0_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwODI4JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDgyOFQwNzAwNTVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zOTNhNjRjMWNkMTRkMjJiNDJkODUwYWU2OTE5NDVhNWE3ZWZkMDJiMjExOWFjOTEyMDM0ZDlkMWU4NTIwYTBhJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9dmlkZW8lMkZ3ZWJtIn0.JFGyra-LOHDvftLOtzw6wZxO--jGEXp4-yn0aXQc42c)
 
 # Factory LiDAR Analytics
 
@@ -34,7 +34,9 @@ In industrial manufacturing, monitoring raw materials and equipment positioning 
 ```text
 .
 ├── config.yaml         # Centralized YAML configuration for hardware, calibration, and detection settings
+├── lidars_calib.txt    # 4 calibration matrices for 4 data from Mr. Jeong
 ├── main.py             # Application entry point (loaders, spatial registration, segmentation, viewer)
+├── main_gpu.py         # GPU-accelerated application entry point (loaders, spatial registration, segmentation, viewer)
 ├── requirements.txt    # Python library requirements
 └── README.md           # Project documentation
 ```
@@ -146,6 +148,12 @@ The pipeline processes continuous frame sequences through four modular phases:
    ```bash
    python main.py
    ```
+
+   or (For GPU-accelerated code)
+
+   ```bash
+   python main_gpu.py 
+   ```
 4. **Inspect Results:**
-   * Press `Space` to pause/resume frame streaming.
-   * Press `C` to switch to **Mode 3** or **Mode 4** to inspect bounding box fits and live metric logging in the console output.
+   * Use the Tkinter Control Panel to adjust frame scrubbers, change visualization modes (choose no 3 or 4 for viewing detection results), or view millisecond stage latency metrics.
+   * Focus the Open3D Render Window to orbit, pan, zoom using your mouse.

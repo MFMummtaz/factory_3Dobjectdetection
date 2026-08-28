@@ -6,16 +6,16 @@ execution:
   mode: "COMBINE"  # Options: "SINGLE_1", "SINGLE_2", "COMBINE"
 
   ##DATA 1##
-  # db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_10_mlx120/LiDAR_192_168_1_10_mlx120.db3"
-  # db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_13_m513211f52400417/LiDAR_192_168_1_13_m513211f52400417.db3"
+  db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_10_mlx120/LiDAR_192_168_1_10_mlx120.db3"
+  db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144905/LiDAR_192_168_1_13_m513211f52400417/LiDAR_192_168_1_13_m513211f52400417.db3"
 
   ##DATA 2##
   # db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144516/LiDAR_192_168_1_12_m613211i62400123/LiDAR_192_168_1_12_m613211i62400123.db3"
   # db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260507_144516/LiDAR_192_168_1_11_m613211i62400124/LiDAR_192_168_1_11_m613211i62400124.db3"
 
   ##DATA 3##
-  db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_10_mlx120/LiDAR_192_168_1_10_mlx120.db3"
-  db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_13_m513211f52400417/LiDAR_192_168_1_13_m513211f52400417.db3"
+  # db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_10_mlx120/LiDAR_192_168_1_10_mlx120.db3"
+  # db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_13_m513211f52400417/LiDAR_192_168_1_13_m513211f52400417.db3"
 
   # db_file_1: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_11_m613211i62400124/LiDAR_192_168_1_11_m613211i62400124.db3"
   # db_file_2: "/home/aiyoubot/Documents/POSCO/lidar-data/mlx_20260701_124432/LiDAR_192_168_1_12_m613211i62400123/LiDAR_192_168_1_12_m613211i62400123.db3"
@@ -27,11 +27,11 @@ calibration:
   # 4x4 Rigid Transformation Matrix for Sensor 2 Alignment
 
   ##DATA 1##
-  # transform_matrix:
-  #   - [ 0.9714,   0.0543,  -0.2312,   1.4150]
-  #   - [ 0.0658,  -0.9969,   0.0422,  -0.1938]
-  #   - [-0.2282,  -0.0562,  -0.9720,  10.4319]
-  #   - [ 0.0,      0.0,      0.0,      1.0   ]
+  transform_matrix:
+    - [ 0.9714,   0.0543,  -0.2312,   1.4150]
+    - [ 0.0658,  -0.9969,   0.0422,  -0.1938]
+    - [-0.2282,  -0.0562,  -0.9720,  10.4319]
+    - [ 0.0,      0.0,      0.0,      1.0   ]
 
   ##DATA 2##
   # transform_matrix:
@@ -41,11 +41,11 @@ calibration:
   #   - [ 0.0,      0.0,     0.0,      1.0   ]
 
   ##DATA 3 - 1&4##
-  transform_matrix:
-    - [ 0.9661,   0.0385,  -0.2551,   1.1907]
-    - [ 0.0492,  -0.9982,   0.0357,  -0.0769]
-    - [-0.2533,  -0.0470,  -0.9663,   7.9886]
-    - [ 0.0000,   0.0000,   0.0000,   1.0000]
+  # transform_matrix:
+  #   - [ 0.9661,   0.0385,  -0.2551,   1.1907]
+  #   - [ 0.0492,  -0.9982,   0.0357,  -0.0769]
+  #   - [-0.2533,  -0.0470,  -0.9663,   7.9886]
+  #   - [ 0.0000,   0.0000,   0.0000,   1.0000]
 
   ##DATA 3 - 2&3##
   # transform_matrix:
